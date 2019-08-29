@@ -1,2 +1,44 @@
-# iTunesBackup_Restoring-parent--child-version
-iTunes Backup - Restoring a parent version's backup to a child version
+# iTunes 백업 - 상위 버전의 백업을 하위 버전에 복원하기
+
+간혹 iTunes 백업을 상위 버전에서 하고 하위 버전에 ‘백업에서 복원'을 하고 싶을 때가 있다. 예를 들면 iOS 8.1에서 백업하고 iOS 8.0에 복원하고 싶을 때가 있듯이. 다만 Apple은 상위 버전에서 백업한 것을 하위 버전에 복원하도록 허락하지 않는다.(버전 차가 크지 않을 경우는 허락하긴 한다.) 왜냐하면 iOS가 업데이트됨에 따라 내부 리소스가 변경됐기 때문에 데이터가 호환되지 않기 때문이다. 하지만 몇몇 데이터는 호환이 되고, 억지로라도 우겨놓고 싶을 때가 있다. 이 방법에 대해 다뤄보겠다.
+
+개요는 이렇다. 백업 파일에 기록된 iOS 버전을 속여서, 현재 복원하려는 iOS 버전이랑 같게 속여서 iTunes로 통해 강제로 복원시키는 것이다. 참고로 말하자면 이건 실패할 가능성이 있다. 또는 복원이 된다 하더라도 몇몇 데이터가 유실될 수 있음을 알린다.
+
+iTunes 백업이 있는 곳으로 찾아가기
+우선 백업 파일 수정을 위해 백업 파일을 찾으러 가야 한다. PC에서 아래 경로로 이동한다.
+
+Mac : ~/Library/Application Support/MobileSync/Backup/
+
+Windows Vista, 7, 8, 8.1, 10 : \Users\(username)\AppData\Roaming\Apple Computer\MobileSync\Backup\
+
+Windows XP : \Documents and Settings\(username)\Application Data\Apple Computer\MobileSync\Backup\
+
+*Tip : Mac 사용자의 경우 Finder에서 특정 경로로 찾아가려면 Shift + commamd + G 키를 누른 다음, 경로를 입력하면 바로 이동이 가능하다.
+
+Windows 사용자의 경우 AppData나 Application Data 폴더로 바로 이동하려면 Windows 탐색기 주소창에 %appdata%를 입력하면 된다. 그래도 모르겠다고? 백문이 불여일견. 동영상을 참고하자. (Windows - AppData 폴더로 이동하기 (YouTube))
+
+찾아가면 외계어로 된 폴더(들)이 보일 것이다. 여기서 그 외계어들을 이해하고 넘어가야 한다. iTunes가 백업을 저장할 때 아래와 같은 규칙으로 저장한다.
+
+기기가 PC에 처음으로 백업할 때 : {UDID}
+
+기기가 PC에 두번째 이상으로 백업할 때 : {UDID}-{날짜}-{시간(24시 기준)}
+
+iTunes 백업 폴더 모음에는 여러 개의 기기 백업들이 한 곳에 모이기 때문에 폴더명을 UDID로 구문하게 되어 있다. 해당 PC에 첫번째로 백업할 때는 UDID로만 된 폴더로 백업을 저장하고, 두번째 이상으로 백업을 저장할 때는 UDID 뒤에 날짜와 시간(24시 기준)을 붙여서 저장한다. 한 가지 예를 들어 보겠다.
+
+만약 내 기기의 UDID가 a43dcb334960aetv306ba09b637cqw43443f3a6이고 내가 2015년 2월 22일, 오후 6시 58분 22초에 백업을 시도했다고 하자. 그러면 백업 이름은 아래와 같이 지정된다.
+
+기기가 PC에 처음으로 백업할 때 : a43dcb334960aetv306ba09b637cqw43443f3a6
+
+기기가 PC에 두번째 이상으로 백업할 때 : a43dcb334960aetv306ba09b637cqw43443f3a6-20150222-185822
+
+이런 식으로 백업이 저장된다. 이걸 이해했다면 자신이 수정하길 원하는 백업 폴더로 이동한다.
+
+백업 파일의 버전을 수정하기
+백업 폴더로 이동하면 수많은 파일들이 보일 것이다. 모두 사용자 데이터 파일들이다. 거기 중에 Info.plist 파일을 찾을 수 있다. 그 파일을 에디터로 통해 실행한다. 거기서 아래와 같은 부분을 찾을 수 있다.
+
+<key>Product Version</key>
+<string>8.1</string>
+Info.plist의 Product Version에 백업의 iOS 버전이 기록되어 있는데, 저 버전을 복원하려는 iOS 버전으로 바꿔치기한 후 파일을 저장한다.
+
+iTunes에서 버전을 바꿔치기한 백업을 복원하기
+만약 현재 iTunes가 실행되어 있으면 종료 후 재실행한다. 그리고 기기에 복원을 시도해본다. 여기서 복원이 오류없이 잘 되면 성공한거고, 만약에 복원 도중 오류가 발생하다면 이 강좌의 방법으로는 불가능한 것이다. 그건 좀 더 깊이 들어가서 수정을 해줘야 하는데, 난 거기까진 몰라서 알려줄 수 없을 것 같다.
